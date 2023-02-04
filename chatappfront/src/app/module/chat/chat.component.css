@@ -1,0 +1,102 @@
+
+
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+  max-height: 185px;
+}
+.fileUploadBlock object{
+  margin-left:-10px;
+  background-color:#ff0000;
+  height:22px !important;
+  }
+  body {
+    line-height: 1.5;
+}
+
+
+/********************************
+ Typography Style
+******************************** */
+
+body {
+  margin: 0;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+}
+
+html {
+  min-height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1 {
+  font-size: 36px;
+}
+
+h2 {
+  font-size: 30px;
+}
+
+h3 {
+  font-size: 26px;
+}
+
+h4 {
+  font-size: 22px;
+}
+
+h5 {
+  font-size: 18px;
+}
+
+h6 {
+  font-size: 16px;
+}
+
+
+
+a {
+  text-decoration: none;
+  font-size: 15px;
+}
+textarea {
+  resize: none;
+}
+* {
+margin-bottom: 0;
+}
+/*********************************/
+
+.chat-area {
+  position: relative;
+  width: 100%;
+  border-radius: 0.3rem;
+
+  overflow: hidden;
+  min-height: calc(100% - 1rem);
+}
+
+pre{
+  font-size: 16px !important;
+  overflow-wrap: break-word;
+white-space: pre-wrap;
+}
+
+
+
+.example-viewport {
+
+  width: 100%;
+
+  box-sizing: border-box;
+}
+
+.tag{
+  position: absolute;
+  bottom: 65px;
+  width: 100%;
+}

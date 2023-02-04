@@ -1,0 +1,35 @@
+.vh-90{
+  height: 95vh !important;
+}
+
+.overflow-x{
+  overflow-x: hidden;
+}
+
+@media screen and (max-width: 992px) {
+  .vh-90{
+    height: 100vh !important;
+  }
+}
+
+.dark-bg{
+  background-color: var(--dark-bg) !important;
+}
+
+.light-bg{
+  background-color: var(--light-bg) !important;
+}
+
+.text-overflow{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wrap-none{
+  flex-wrap: nowrap !important;
+}
+
+.tag-highlight{
+  background-color: rgb(199, 223, 245) !important;
+}

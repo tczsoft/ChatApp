@@ -1,0 +1,91 @@
+<section class="h-100 gradient-form bg-white">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-xl-10">
+        <div class="card rounded-3 border border-0 text-black">
+          <div class="row card-height g-0 my-shadow rounded-3">
+            <div id="col-order-1" class="col-lg-6 d-flex align-items-center gradient-custom-2 border-end">
+              <div class="text-white px-3 py-4 p-md-5 mx-md-4">
+                <img src="../../../assets/img/wallpaper/img-1.png" class="img-fluid" alt="">
+              </div>
+            </div>
+
+            <div class="col-lg-6 d-flex align-items-center" id="col-order-2">
+              <div class="card-body p-md-5 mx-md-4">
+
+                <div *ngIf="status == null || status =='email id already exist' || status =='Unauthorized mail id'" class="text-center">
+                  <div class="mt-1 mb-2 pb-1 fs-2 fw-semibold">Create new account</div>
+                </div>
+
+                <div *ngIf="status == 'verify OTP' || status == 'OTP verfied' || status == 'OTP invalid'" class="text-center">
+                  <div class="mt-1 mb-2 pb-1 fs-2 fw-semibold">OTP Verification</div>
+                </div>
+
+                <div *ngIf="status == 'OTP verified'" class="text-center">
+                  <div class="mt-1 mb-2 pb-1 fs-2 fw-semibold">Account Details</div>
+                </div>
+
+                <div *ngIf="status == null || status =='email id already exist' || status =='Unauthorized mail id'" class="d-flex align-items-center pb-4 fs-6">
+                  <p class="mb-0 me-2">Already a member?</p>
+                  <a class="text-center text-decoration-none" routerLink="/login">Log in</a>
+                </div>
+
+                <form *ngIf="status == null || status =='email id already exist' || status =='Unauthorized mail id'" class="3" #sendmail="ngForm" (ngSubmit)="submit(sendmail)" ngNativeValidate>
+
+                  <div class="mb-3">
+                    <label for="validationDefaultUsername" class="form-label fs-6">Email</label>
+                    <div class="input-group">
+                      <span class="input-group-text" id="inputGroupPrepend2">@</span>
+                      <input type="email" class="form-control" ngModel #Email="ngModel" name="Email" id="Email" aria-describedby="inputGroupPrepend2" required>
+                    </div>
+                    <div *ngIf="status != null" class="mt-1 text-danger">{{status}}!</div>
+                  </div>
+
+                  <button class="btn text-white dark-bg w-100 " type="submit">Next</button>
+
+                </form>
+
+                <form *ngIf="status == 'verify OTP' || status == 'OTP verfied' || status == 'OTP invalid'" class="" #verify="ngForm" (ngSubmit)="verifyotp(verify)" ngNativeValidate>
+
+                  <div class="mb-3">
+                    <label for="validationDefaultUsername" class="form-label">OTP</label>
+                    <input type="text" class="form-control" ngModel #otp="ngModel" name="otp" id="otp" aria-describedby="inputGroupPrepend2" required>
+                    <div class="mt-1">OTP will expire in <span class="text-danger" id="timer">{{display}}</span> minutes!</div>
+                    <a *ngIf="resentOTP == true" class="text-primary text-decoration-none" type="button" (click)="resentotp()">Resent OTP</a>
+                    <div *ngIf="status == 'OTP invalid'" class="mt-1 text-danger">{{status}}!</div>
+                  </div>
+                  <button class="btn btn-primary ms-2 dark-bg w-100" type="submit">Verify</button>
+
+                </form>
+
+                <form *ngIf="status == 'OTP verified'" class="" #register="ngForm" (ngSubmit)="finalstep(register,email)" ngNativeValidate>
+
+                    <div class="mb-3">
+                      <label for="validationDefaultUsername" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" ngModel #Name="ngModel" name="Name" id="Name" aria-describedby="inputGroupPrepend2" required>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="validationDefaultUsername" class="form-label">Password</label>
+                        <input type="text" class="form-control" ngModel #Password="ngModel" name="Password" id="Password" aria-describedby="inputGroupPrepend2" required>
+                    </div>
+
+                    <button class="btn btn-primary ms-2 dark-bg w-100" type="submit">Register</button>
+
+                </form>
+
+                <div *ngIf="status == null || status =='email id already exist' || status =='Unauthorized mail id'" class="text-center mt-4">
+                  <p class="ba-line mb-4"><span class="bg-white px-2 fs-6">Or sign in with</span></p>
+                  <button class="btn bg-light border border-0 w-100 mb-4"> <i class="fa-brands fa-google text-google-icon me-2"></i> Sign in with Google </button>
+
+                  <p class="mt-2">©2022 Webestie. All rights reserved</p>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,34 @@
+.card-height{
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+
+.col-reverse{
+  flex-direction: row-reverse;
+}
+
+#col-order-1{
+  -webkit-box-ordinal-group: 1 !important;
+  -ms-flex-order: 1 !important;
+  order: 1 !important;
+}
+
+#col-order-2{
+  -webkit-box-ordinal-group: 2 !important;
+  -ms-flex-order: 2 !important;
+  order: 2 !important;
+}
+
+@media screen and (max-width: 992px){
+  #col-order-1{
+    -webkit-box-ordinal-group: 2 !important;
+    -ms-flex-order: 2 !important;
+    order: 2 !important;
+  }
+
+  #col-order-2{
+    -webkit-box-ordinal-group: 1 !important;
+    -ms-flex-order: 1 !important;
+    order: 1 !important;
+  }
+}

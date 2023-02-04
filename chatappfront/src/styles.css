@@ -1,0 +1,11 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('../node_modules/@fontsource/poppins/index.css');
+
+@import url('./assets/css/variables.css');
+@import url('./assets/css/profilepanel.css');
+@import url('./assets/css/content.css');
+@import url('./assets/css/chatpanel.css');
+@import url('./assets/css/login.css');
+@import url('./assets/css/register.css');
+
+

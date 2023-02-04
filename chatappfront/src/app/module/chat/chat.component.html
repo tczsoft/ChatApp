@@ -1,0 +1,318 @@
+<div class="toast-container position-fixed top-0 end-0 p-3">
+  <div id="liveToast" class="toast {{bgcolor}} text-white" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <strong class="me-auto">{{messagestatus}}</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      {{messagecontent}}
+    </div>
+  </div>
+</div>
+
+<section class="pt-0 pt-lg-4 chat-sec" >
+  <div class="container-lg container-fluid px-0">
+    <div class="row g-0 shadow">
+
+      <div class="col-md-4" id="profile-panel" [ngClass]="checkwidth > 786 ? 'd-md-block':''">
+        <div class="card chat-area dark-bg rounded-0 vh-90">
+
+          <div class="card-header">
+            <div class="d-flex" role="search">
+              <input class="form-control rounded-2 light-bg border border-0" autocomplete="off" [ngModel]="searchdata" name="searchdata" type="search"
+                placeholder="Search" aria-label="Search" (ngModelChange)="somethingChanged($event)">
+                <ul class="ps-2">
+                  <li class="mt-1 nav-item dropdown">
+                    <a class="nav-link px-2  fs-5 " href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fa-solid fa-ellipsis-vertical text-white"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Send Request</a></li>
+                      <li><a class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#request_recive_model">Request</a></li>
+                      <li><a class="dropdown-item" href="#">Refresh</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" role='button' (click)="this.login.logout();disconnectSocket();">Logout</a></li>
+                    </ul>
+                  </li>
+
+                </ul>
+            </div>
+          </div>
+
+          <!--Client profile-->
+          <div class="card-body pt-0 px-0" id="contacts">
+
+            <ul *ngFor="let user of filterdata==null?Users:filterdata" class="list-group list-group-flush">
+              <li [ngSwitch]="true" class="list-group-item py-3" (click)="getmessage(user,messageform)" role="button" *ngIf="user.Email!=this.login.getUserDetails().data.Email">
+                <span class="d-flex align-items-start" *ngSwitchDefault>
+                  <p-avatar class="text-uppercase me-2 float-start" size="large" label="{{user.Email[0]}}" styleClass="mr-2" [style]="{'background-color':'#2196F3', 'color': '#ffffff'}" shape="circle"></p-avatar>
+                    <div class="float-start text-overflow">
+                      <span class="primary-font fs-5">{{user.Email}}</span><br>
+                      <span class="status"> <i class="fa-solid fa-circle" [ngClass]="[user.status=='Online'?'text-success':'text-danger']"></i> {{user.status}}</span>
+                    </div>
+                  <span class="badge text-bg-danger" *ngIf="user.count!=null">{{user.count}}</span>
+                </span>
+              </li>
+            </ul>
+
+          </div>
+          <div class="card-footer d-flex justify-content-between">
+            <button type="button" class="btn drak-bg text-white w-50 rounded-0 border border-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="fa-solid fa-user-plus"></i> Invite</button>
+            <button class="btn drak-bg text-white w-50 rounded-0 border border-0" type="button" data-bs-toggle="modal" data-bs-target="#request_recive_model">
+              <span class="position-relative"><i class="fa-solid fa-user-check"></i> Accept
+                <span *ngIf="requsetlist.length !=0" class="position-absolute top-0 start-100 translate-middle p-1 bg-danger rounded-circle">
+                  <span class="visually-hidden">New alerts</span>
+                </span>
+            </span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- chat panel-->
+      <div class="col-md-8 border p-0 d-flex align-items-center" [ngClass]="checkwidth < 786?'d-none':''" *ngIf="usernametitle==null">
+        <div class="text-center">
+          <img src="./assets/img/wallpaper/img-2.png" class="" width="50%" alt="">
+          <div class="h1">People's Chat</div>
+        </div>
+      </div>
+
+      <div class="col-md-8 d-md-block" [ngClass]="usernametitle!=null && checkwidth > 768 ?'d-none':''" *ngIf="usernametitle!=null">
+
+        <div class="row g-0">
+          <div class="col-md-12">
+            <div id="message" class="border border-bottom-0 position-relative " >
+
+              <nav class="navbar bg-white border border-bottom-0">
+                <div class="container-fluid justify-content-start wrap-none">
+                  <button class="btn d-block d-md-none" (click)="backtoprofile()"><i class="fa-solid fa-arrow-left"></i></button>
+                  <a class="navbar-brand text-overflow me-0" >
+                    <p-avatar class="text-uppercase me-2" label="{{usernametitle[0]}}" styleClass="mr-1" [style]="{'background-color':'#2196F3', 'color': '#ffffff'}" shape="circle"></p-avatar>
+                    {{usernametitle}}
+                  </a>
+                </div>
+              </nav>
+
+              <!--Down button-->
+              <div class="down-btn rounded">
+                <button class="btn position-relative text-white" (click)="backTobottom()"><i class="fa-solid fa-arrow-down"></i>
+                  <span *ngFor="let user of filterdata==null?Users:filterdata">
+                    <span class="position-absolute top-0 start-100 translate-middle badge text-bg-danger" *ngIf="user.Email == usernametitle">{{user.count}}</span>
+                  </span>
+
+                </button>
+              </div>
+
+
+              <cdk-virtual-scroll-viewport #scroll class="example-viewport" appendOnly itemSize="5" [ngStyle]="{'height':scrollheight}">
+                <p class="fs-3 text-center">Welcome to Chatapp</p>
+                <ng-container *cdkVirtualFor="let message of Messagedata;trackBy: trackByForm">
+                  <ul [ngSwitch]="true" class="mt-1" id="{{message._id}}">
+                    <li class="mb-1 message-items rounded-3" [ngClass]="message.from==this.login.getUserDetails().data.Email?'sent':'replies'" *ngSwitchCase="message.from==this.login.getUserDetails().data.Email&& message.Messagetype=='image'">
+                      <p-avatar class="ms-2 float-end" label="Me"  [style]="{'background-color':'#2196F3', 'color': '#ffffff'}" shape="circle"></p-avatar>
+                      <p class="sent message">
+                        <span *ngIf="message.Tagedmessageid != undefined"><a (click)="scrolltoindex(message.Tagedmessageid)"><i class="fa-solid fa-tag"></i></a></span>
+                        <figure> <img src="{{message.Message}}" class="img-fluid"> </figure>
+                        <span class="d-flex justify-content-between">
+                          <span class="date-time">{{message.Date}}</span>
+                          <span class="date-time">
+                            <a href="{{message.Message}}" (click)="downloadimg(message.Message)" class="btn shadow-none border border-0" download="chatapp_img.jpg"><i class="fa-regular fa-circle-down"></i></a>
+
+                            <span class="dropdown">
+                              <button class="btn border border-0 px-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                              </button>
+                              <ul class="dropdown-menu">
+                                <li><a role="button" class="dropdown-item" (click)="deletemessage(message)">Delete Message</a></li>
+                                <li><a role="button" class="dropdown-item" (click)="replay(message._id)">Reply</a></li>
+                              </ul>
+                            </span>
+                          </span>
+                        </span>
+                      </p>
+                    </li>
+
+                    <li class="mb-1 message-items rounded-3" [ngClass]="message.from==this.login.getUserDetails().data.Email?'sent':'replies'" *ngSwitchCase="message.from==this.login.getUserDetails().data.Email&& message.Messagetype!='image'">
+                      <p-avatar class="ms-2 float-end" label="Me" [style]="{'background-color':'#2196F3', 'color': '#ffffff'}" shape="circle"></p-avatar>
+                      <p class="sent message px-3">
+                        <span *ngIf="message.Tagedmessageid != undefined"><a (click)="scrolltoindex(message.Tagedmessageid)"><i class="fa-solid fa-tag"></i></a></span>
+                        <span> <pre>{{message.Message}}</pre></span>
+                        <span class="d-flex align-items-center justify-content-between">
+                          <span class="date-time">{{message.Date}}</span>
+                          <span class="dropstart">
+                            <button class="btn border py-0 border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                              <li><a role="button" class="dropdown-item" (click)="deletemessage(message)">Delete Message</a></li>
+                              <li><a role="button" class="dropdown-item" (click)="replay(message._id)">Reply</a></li>
+                            </ul>
+                          </span>
+                        </span>
+
+                      </p>
+                    </li>
+
+                    <li class="mb-1 message-items rounded-3" *ngSwitchCase="message.from!=this.login.getUserDetails().data.Email&&message.Messagetype=='image'">
+                      <p-avatar class="text-uppercase me-2 float-start" label="{{avatar}}" styleClass="mr-2" [style]="{'background-color':'#2196F3', 'color': '#ffffff'}" shape="circle"></p-avatar>
+                        <p class="replies message px-3 me-2">
+                          <span *ngIf="message.Tagedmessageid != undefined"><a (click)="scrolltoindex(message.Tagedmessageid)"><i class="fa-solid fa-tag"></i></a></span>
+                          <figure> <img src="{{message.Message}}" class="img-fluid"> </figure>
+                          <span class="d-flex justify-content-between align-items-center">
+                            <span class="date-time">{{message.Date}}</span>
+                            <span class="date-time"><a href="{{message.Message}}" (click)="downloadimg(message.Message)" class="btn text-white shadow-none border border-0" download="chatapp_img.jpg"><i class="fa-regular fa-circle-down"></i></a>
+
+                              <span class="dropup">
+                                <button class="btn border border-0 text-white px-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                  <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                               <!--   <li><a role="button" class="dropdown-item" (click)="deletemessage(message)">Delete Message</a></li>-->
+                               <li><a role="button" class="dropdown-item" (click)="replay(message._id)">Reply</a></li>
+                                </ul>
+                              </span>
+
+                            </span>
+                          </span>
+                        </p>
+                    </li>
+
+                    <li class="mb-1 message-items rounded-3" *ngSwitchDefault>
+                      <p-avatar class="text-uppercase me-2 float-start" label="{{avatar}}" styleClass="mr-2" [style]="{'background-color':'#2196F3', 'color': '#ffffff'}" shape="circle"></p-avatar>
+                        <p class="replies message px-3 me-2">
+                          <span *ngIf="message.Tagedmessageid != undefined"><a (click)="scrolltoindex(message.Tagedmessageid)"><i class="fa-solid fa-tag"></i></a></span>
+                          <span> <pre>{{message.Message}}</pre></span>
+                          <span class="d-flex align-items-center justify-content-between">
+                            <span class="date-time">{{message.Date}}</span>
+
+                            <span class="dropup" >
+                              <button class="btn border py-0 border-0 text-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                              </button>
+                              <ul class="dropdown-menu">
+                              <!--  <li><a role="button" class="dropdown-item" (click)="deletemessage(message)">Delete Message</a></li>-->
+                              <li><a role="button" class="dropdown-item" (click)="replay(message._id)">Reply</a></li>
+                              </ul>
+                            </span>
+
+                          </span>
+                        </p>
+                    </li>
+                  </ul>
+                </ng-container>
+
+              </cdk-virtual-scroll-viewport>
+              <div class="tag" *ngIf="tagmessageid != undefined">
+                <span class="bg-white d-flex justify-content-between align-items-center mt-2 w-100 pt-1 px-2">
+                  <span><i class="fa-solid fa-tag"></i> Meaasge Taged</span>
+                  <button (click)="tagmessageid= undefined" class="btn"><i class="fa-solid fa-xmark"></i></button>
+                </span>
+              </div>
+
+               <div class="model bg-white">
+                <form #messageform="ngForm" (ngSubmit)="messagesend(messageform,usernametitle)" ngNativeValidate>
+
+                  <div class="d-flex align-items-center py-2 px-2 sandel-bg border-bottom border-end position-relative" id="message-panel">
+
+                    <textarea [ngModel]="Message" #data placeholder="Type here..." name="Message" class="form-control shadow-none" id="validationDefaultUsername" aria-describedby="inputGroupPrepend2"  style="height: 50px" required> </textarea>
+                    <button class="btn border border-0 fs-5" type="button" (click)="toggled = !toggled">
+                      <i class="fa-regular fa-face-smile"></i>
+                    </button>
+                    <emoji-mart *ngIf="toggled == true" (emojiClick)="addEmoji($event,data)" title="Pick your emoji…" emoji="point_up" [hideObsolete]="true" [style]="{  width: '100%', position: 'absolute', bottom: '68px', right: '0' }"></emoji-mart>
+                    <a class="btn border border-0 fs-5" data-bs-toggle="modal" data-bs-target="#fileupload"><i class="fa-solid fa-arrow-up-from-bracket"></i></a>
+                    <button class="btn border border-0" type="submit" id="addItems"><img src="../../../assets/img/button/send.svg" alt=""></button>
+                  </div>
+                </form>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="fileupload" #model data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-dialog-centered" style="max-width: 600px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Upload Image</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0">
+        <p-fileUpload name="demo[]" [customUpload]="true" #fileupload (uploadHandler)="onUpload($event,usernametitle,fileupload)" (onUpload)="onUpload($event,usernametitle,fileupload)" accept="image/*">
+          <ng-template pTemplate="content">
+            <ul *ngIf="uploadedFiles.length">
+              <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+            </ul>
+          </ng-template>
+        </p-fileUpload>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Request sender Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Request</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #click></button>
+      </div>
+      <div class="modal-body">
+        <form class="row g-3" #mform="ngForm" (ngSubmit)="sendrequest(mform,click)" ngNativeValidate>
+          <div class="mb-2">
+            <label for="validationDefaultUsername" class="form-label">Email</label>
+            <div class="input-group">
+              <input type="email" ngModel #Email="ngModel" name="Email" class="form-control" id="validationDefaultUsername" aria-describedby="inputGroupPrepend2" required>
+            </div>
+          </div>
+          <div class="text-end">
+            <button class="btn dark-bg text-white mt-1 " type="submit" id="addItems">Send request</button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Request recive Modal -->
+<div class="modal fade" id="request_recive_model" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Recived Request</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #click></button>
+      </div>
+      <div class="modal-body">
+        <ul [ngSwitch]="true" class="px-0 text-center">
+          <div *ngSwitchCase="requsetlist.length==0">
+            <li><span class="dropdown-item">Requests not found!</span></li>
+          </div>
+          <div *ngSwitchDefault>
+            <li *ngFor="let list of requsetlist" class="mb-2">
+              <span class="dropdown-item fs-6 d-flex align-items-center justify-content-between">
+                <span class="text-overflow">
+                  <p-avatar class="text-uppercase me-2 float-start"  label="{{list.Email[0]}}" styleClass="mr-2" [style]="{'background-color':'#2196F3', 'color': '#ffffff'}" shape="circle"></p-avatar>
+                  {{list.Email}}
+                </span>
+
+                <span class="d-flex">
+                  <i class="fa-solid fa-check text-success px-2" role="button" (click)="actionrequest(list.Email,'Accepted')"></i>
+                  <i class="fa-solid fa-xmark mr-2 text-danger px-2" role="button" (click)="actionrequest(list.Email,'Rejected')"></i>
+                </span>
+            </span>
+            </li>
+          </div>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

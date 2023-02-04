@@ -1,0 +1,18 @@
+#contacts{
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+#contacts::-webkit-scrollbar {
+  display: none;
+}
+
+#contacts ul{
+  --bs-list-group-bg: rgba(255, 255, 255, 0) !important;
+  --bs-list-group-color: white;
+}
+
+#contacts ul li:hover{
+  background-color: hwb(208 45% 42%);
+}
+

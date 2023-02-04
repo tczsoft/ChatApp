@@ -1,0 +1,67 @@
+<section class="h-100 gradient-form bg-white">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-xl-10">
+        <div class="card rounded-3 border border-0 text-black">
+          <div class="row g-0 my-shadow rounded-3">
+            <div class="col-lg-6 d-flex align-items-center gradient-custom-2 border border-0 border-md-end" id="col-order-1">
+              <div class="text-white px-3 py-4 p-md-5 mx-md-4">
+                <img src="../../../assets/img/wallpaper/img-1.png" class="img-fluid" alt="">
+              </div>
+            </div>
+
+            <div class="col-lg-6" id="col-order-2">
+              <div class="card-body p-md-5 mx-md-4">
+
+                <div class="text-center">
+                  <div class="mt-1 mb-3 pb-1 fs-2 fw-semibold">Welcome to Chatapp</div>
+                </div>
+
+                <form class="mb-5" #f="ngForm" (ngSubmit)="submit(f)" ngNativeValidate>
+
+                  <div class="mb-3">
+                    <label for="validationDefaultUsername" class="form-label fs-6">Username</label>
+                    <div class="input-group">
+                      <span class="input-group-text" id="inputGroupPrepend2">@</span>
+                      <input type="text" class="form-control" ngModel #Email="ngModel" name="Email" id="validationDefaultUsername"
+                        aria-describedby="inputGroupPrepend2" required>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="validationDefaultpassword" class="form-label fs-6">Password</label>
+                    <div class="input-group">
+                      <span class="input-group-text" id="inputGroupPrepend2"><i class="fa-solid fa-key"></i></span>
+                      <input type="password" ngModel #Password="ngModel" name="Password" class="form-control"
+                        id="validationDefaultpassword" aria-describedby="inputGroupPrepend2" required>
+                    </div>
+                  </div>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" value="" id="invalidCheck2">
+                    <label class="form-check-label" for="invalidCheck2">
+                      Remember me?
+                    </label>
+                  </div>
+
+                  <button class="btn text-white dark-bg w-100 " type="submit">Login</button>
+
+                </form>
+
+                <div class="d-flex align-items-center justify-content-center pb-4">
+                  <p class="mb-0 me-2">Don't have an account?</p>
+                  <a class="text-center text-decoration-none" routerLink="/register">Create new account</a>
+                </div>
+                <div class="text-center">
+                  <p class="ba-line"><span class="bg-white px-2 fs-6">Or sign in with</span></p>
+                  <button class="btn bg-light border border-0 w-100 mb-4"> <i class="fa-brands fa-google text-google-icon me-2"></i> Sign in with Google </button>
+
+                  <p class="mt-2">©2022 Website. All rights reserved</p>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
